@@ -1,0 +1,41 @@
+{
+  "name": "militar",
+  "title": "SLOT RAT",
+  "cssVars": {
+    "--olive": "#4a5232",
+    "--olive-dark": "#2e3322",
+    "--metal": "#23262b",
+    "--metal-light": "#3a3e45",
+    "--gold": "#d4af37",
+    "--gold-dark": "#8a6d1f",
+    "--neon": "#39ff6a",
+    "--text": "#e8e3d0"
+  },
+  "symbols": [
+    { "id": "rata",      "name": "RATA",       "weight": 1,  "pay": { "3": 100, "4": 300, "5": 1000 } },
+    { "id": "casco",     "name": "CASCO",      "weight": 2,  "pay": { "3": 50,  "4": 150, "5": 500 } },
+    { "id": "granada",   "name": "GRANADA",    "weight": 3,  "pay": { "3": 30,  "4": 100, "5": 300 } },
+    { "id": "mira",      "name": "MIRA",       "weight": 4,  "pay": { "3": 20,  "4": 60,  "5": 200 } },
+    { "id": "cuchillo",  "name": "CUCHILLO",   "weight": 5,  "pay": { "3": 15,  "4": 50,  "5": 150 } },
+    { "id": "botas",     "name": "BOTAS",      "weight": 6,  "pay": { "3": 10,  "4": 40,  "5": 100 } },
+    { "id": "chaleco",   "name": "CHALECO",    "weight": 7,  "pay": { "3": 8,   "4": 30,  "5": 80 } },
+    { "id": "radio",     "name": "RADIO",      "weight": 8,  "pay": { "3": 5,   "4": 20,  "5": 50 } },
+    { "id": "wild",      "name": "WILD",       "weight": 1,  "isWild": true,
+      "pay": { "3": 100, "4": 300, "5": 1000 } },
+    { "id": "scatter",   "name": "SCATTER",    "weight": 2,  "isScatter": true }
+  ],
+  "symbolImg": "themes/militar/symbols/{id}.svg",
+  "reelBg": "themes/militar/reel-bg.svg",
+  "wildStack": {
+    "frames": [
+      "themes/militar/wild-stack/frame-01.svg",
+      "themes/militar/wild-stack/frame-02.svg",
+      "themes/militar/wild-stack/frame-03.svg",
+      "themes/militar/wild-stack/frame-04.svg"
+    ],
+    "fps": 12
+  },
+  "texts": {
+    "bonusTitle": "OPERACIÓN NOCTURNA ACTIVADA"
+  }
+}
