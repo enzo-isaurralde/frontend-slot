@@ -45,11 +45,23 @@ export class ReelsEngine {
   }
 
   // Construir strip: filas aleatorias + resultado final abajo
+  // IMPORTANTE: 'grid' viene en formato de FILAS (3x5), lo transponemos a COLUMNAS (5x3)
   build(grid) {
     const theme = getTheme();
+
+    // 1. Transponer: de [fila][columna] a [columna][fila]
+    const columns = [];
+    for (let col = 0; col < CONFIG.REELS; col++) {
+      columns[col] = [];
+      for (let fila = 0; fila < CONFIG.ROWS; fila++) {
+        columns[col][fila] = grid[fila][col];
+      }
+    }
+
+    // 2. Construir los carretes
     this.reels.forEach((reel, i) => {
       reel.el.classList.remove('is-stack');   // reset de stack anterior
-      reel.final = grid[i];
+      reel.final = columns[i];                 // <-- Ahora es una columna (3 elementos)
       reel.strip.innerHTML = '';
       reel.cells = [];
 
@@ -57,7 +69,7 @@ export class ReelsEngine {
       for (let r = 0; r < CONFIG.REEL_EXTRA_ROWS; r++) {
         ids.push(this._randomId(theme));
       }
-      ids.push(...grid[i]);
+      ids.push(...columns[i]);                 // <-- Ahora tiene 3 elementos (no undefined)
 
       for (const id of ids) {
         const cell = document.createElement('div');

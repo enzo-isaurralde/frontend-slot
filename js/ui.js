@@ -1,6 +1,5 @@
 // =========================================================
 // UI — consola, modales, contadores y botones.
-// Comunica con main.js a través de callbacks.
 // =========================================================
 
 import { CONFIG } from './config.js';
@@ -8,13 +7,27 @@ import { getTheme, symbolUrl } from './theme.js';
 import { setCounter } from './effects.js';
 import { audio } from './audio.js';
 
+// Función auxiliar para formatear centavos a pesos
+function formatMoney(centavos) {
+  return (centavos / 100).toLocaleString('es-AR', {
+    style: 'currency',
+    currency: 'ARS',
+    minimumFractionDigits: 2
+  });
+}
+
 export function initUI(callbacks) {
   const betEl = document.getElementById('bet-val');
-  let bet = CONFIG.MIN_BET;
+  let bet = CONFIG.MIN_BET; // En centavos
   let turbo = false;
 
   // ----- Apuesta -----
-  const renderBet = () => { betEl.textContent = bet.toLocaleString('es-AR'); callbacks.onBetChange(bet); };
+  const renderBet = () => {
+  // Mostramos el valor en pesos (dividido por 100)
+  betEl.textContent = (bet / 100).toLocaleString('es-AR');
+  // Pero enviamos el valor en centavos al callback
+  callbacks.onBetChange(bet);
+};
   document.getElementById('btn-bet-minus').addEventListener('click', () => {
     bet = Math.max(CONFIG.MIN_BET, bet - CONFIG.BET_STEP); renderBet();
   });
@@ -25,7 +38,6 @@ export function initUI(callbacks) {
 
   // ----- Giro / turbo -----
   document.getElementById('btn-spin').addEventListener('click', () => {
-    audio.unlock();
     callbacks.onSpin();
   });
   const turboBtn = document.getElementById('btn-turbo');
@@ -37,7 +49,6 @@ export function initUI(callbacks) {
   // ----- Sonido -----
   const sndBtn = document.getElementById('btn-sound');
   sndBtn.addEventListener('click', () => {
-    audio.unlock();
     sndBtn.textContent = audio.toggle() ? 'SND ON' : 'SND OFF';
   });
 
@@ -66,8 +77,9 @@ export function initUI(callbacks) {
       document.getElementById('btn-bet-minus').disabled = spinning;
       document.getElementById('btn-bet-plus').disabled = spinning;
     },
-    setBalance: (v) => setCounter(document.getElementById('balance-val'), v),
-    setWin: (v) => setCounter(document.getElementById('win-val'), v),
+    // Formateamos los contadores para mostrar pesos
+    setBalance: (v) => setCounter(document.getElementById('balance-val'), v / 100),
+    setWin: (v) => setCounter(document.getElementById('win-val'), v / 100),
     setFreeSpins(n) {
       document.getElementById('fs-badge').classList.toggle('hidden', n <= 0);
       document.getElementById('fs-count').textContent = n;
