@@ -31,7 +31,6 @@ async function boot() {
   window.addEventListener('resize', sizeCells);
 
   // Grilla inicial estática (sin tocar el saldo del backend)
-  // Usamos una grilla de ejemplo para que la pantalla no esté vacía al cargar
   const initialGrid = [
     ['rata', 'casco', 'granada', 'mira', 'cuchillo'],
     ['botas', 'chaleco', 'radio', 'wild', 'scatter'],
@@ -40,22 +39,33 @@ async function boot() {
   reels.build(initialGrid);
 }
 
-// Celda cuadrada y responsiva según el ancho disponible
+// Celdas más altas que anchas; el tamaño sale del espacio real disponible
+const CELL_RATIO = 1.5;            // alto = ancho × 1.2 (si querés, pasalo a config.js)
+
 function sizeCells() {
-  const wrap = document.getElementById('stage');
-  const gap = 8 * (CONFIG.REELS - 1) + 28 + 8; // gaps + paddings + bordes
-  const cell = Math.max(56, Math.min(110, Math.floor((wrap.clientWidth - gap) / CONFIG.REELS)));
-  document.documentElement.style.setProperty('--cell', cell + 'px');
+  const stage = document.getElementById('stage');
+  const cs = getComputedStyle(stage);
+  const gap = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--gap')) || 4;
+
+  // Espacio interno real (sin números mágicos)
+  const w = stage.clientWidth  - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+  const h = stage.clientHeight - parseFloat(cs.paddingTop)  - parseFloat(cs.paddingBottom);
+
+  const cellW = Math.floor((w - gap * (CONFIG.REELS - 1)) / CONFIG.REELS);
+  const cellH = Math.min(Math.floor(cellW * CELL_RATIO), Math.floor(h / CONFIG.ROWS));
+
+  const root = document.documentElement.style;
+  root.setProperty('--cell-w', cellW + 'px');
+  root.setProperty('--cell',   cellH + 'px');   // se mantiene como ALTO para no romper reels.js
   reels.measure();
 }
-
 // ---- Loop principal de un giro ----
 async function doSpin() {
   if (spinning) return;
   spinning = true;
   ui.setSpinning(true);
   cleanupFx();
-  //audio.spinStart();
+  // audio.spinStart();
 
   const free = getFreeSpins() > 0;
   
@@ -105,7 +115,6 @@ async function doSpin() {
 
   } catch (error) {
     console.error("Error en el giro:", error);
-    // Si el backend falla, mostramos un mensaje en la consola
     ui.setWin(0);
   } finally {
     spinning = false;
